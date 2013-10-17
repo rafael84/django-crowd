@@ -22,7 +22,7 @@ class CrowdBackend(ModelBackend):
             if user:
                 user.set_password(password)
             else:
-                self._create_new_user_from_crowd_response(username, password, content, crowd_config)
+                user = self._create_new_user_from_crowd_response(username, password, content, crowd_config)
             return user
         else:
             return None
@@ -68,7 +68,8 @@ class CrowdBackend(ModelBackend):
         user.is_active = True
         if 'superuser' in crowd_config and crowd_config['superuser']:
             user.is_superuser = crowd_config['superuser']
-            user.is_staff = user.is_superuser
+        if 'staffuser' in crowd_config and crowd_config['staffuser']:
+            user.is_staff = crowd_config['staffuser']
         user.save()
         return user
 
